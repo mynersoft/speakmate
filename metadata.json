@@ -1,0 +1,9 @@
+{
+  "name": "SpeakMate",
+  "description": "SpeakMate - Practice English through real-time video and audio conversations with approved community members.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
