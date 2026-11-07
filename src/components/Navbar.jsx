@@ -86,6 +86,15 @@ export default function Navbar() {
                   </Link>
 
                   <Link 
+                    to="/members" 
+                    className={`text-sm font-medium transition-colors ${
+                      location.pathname === '/members' ? 'text-blue-600' : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Active Members
+                  </Link>
+
+                  <Link 
                     to="/matching" 
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm shadow-blue-600/30 transition-all hover:shadow-md"
                   >
@@ -204,6 +213,13 @@ export default function Navbar() {
                   className="block py-2 text-base font-medium text-slate-700"
                 >
                   Dashboard
+                </Link>
+                <Link
+                  to="/members"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-base font-medium text-slate-700"
+                >
+                  Active Members
                 </Link>
                 <Link
                   to="/matching"

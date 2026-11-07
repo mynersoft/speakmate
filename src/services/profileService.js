@@ -53,6 +53,63 @@ export const profileService = {
   },
 
   /**
+   * Update member custom active practice time
+   */
+  async updatePracticeTime(userId, practiceTime) {
+    if (!userId) return null;
+    const cleanTime = practiceTime?.trim() || '';
+
+    // Cache locally for instant UI responsiveness
+    try {
+      if (cleanTime) {
+        localStorage.setItem(`speakmate_practice_time_${userId}`, cleanTime);
+      } else {
+        localStorage.removeItem(`speakmate_practice_time_${userId}`);
+      }
+    } catch (_) {}
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        // Attempt to update practice_time in profiles
+        const { data, error } = await supabase
+          .from('profiles')
+          .update({
+            practice_time: cleanTime,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', userId)
+          .select()
+          .single();
+
+        if (!error && data) return data;
+      } catch (err) {
+        console.warn('Database practice_time column notice (using metadata fallback):', err?.message);
+      }
+
+      // If practice_time column not present in profiles table, update user metadata
+      try {
+        await supabase.auth.updateUser({
+          data: { practice_time: cleanTime },
+        });
+      } catch (_) {}
+    }
+
+    return { practice_time: cleanTime };
+  },
+
+  /**
+   * Get member custom active practice time
+   */
+  getPracticeTime(userId) {
+    if (!userId) return '';
+    try {
+      return localStorage.getItem(`speakmate_practice_time_${userId}`) || '';
+    } catch (_) {
+      return '';
+    }
+  },
+
+  /**
    * Membership status - Instant open access (Community approval barrier removed)
    */
   async getMembershipStatus(userId) {

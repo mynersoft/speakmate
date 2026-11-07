@@ -9,10 +9,12 @@ import {
   Mic, 
   Lightbulb,
   Globe,
-  Award
+  Award,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { usePresence } from '../hooks/usePresence';
+import ActiveMembersList from '../components/ActiveMembersList';
 
 const PRACTICE_TOPICS = [
   {
@@ -62,11 +64,19 @@ export default function Dashboard() {
               Start Practicing Now
             </Link>
 
-            <Link
-              to="/settings"
+            <a
+              href="#active-members"
               className="inline-flex items-center gap-2 px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-colors"
             >
-              <Mic className="w-4 h-4" />
+              <Users className="w-4 h-4" />
+              Browse Active Members
+            </a>
+
+            <Link
+              to="/settings"
+              className="inline-flex items-center gap-2 px-4 py-4 rounded-xl text-blue-100 hover:text-white font-medium text-xs transition-colors"
+            >
+              <Mic className="w-3.5 h-3.5" />
               Test Camera & Mic
             </Link>
           </div>
@@ -112,6 +122,11 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* ACTIVE MEMBERS SECTION */}
+      <div id="active-members" className="scroll-mt-20">
+        <ActiveMembersList />
+      </div>
+
       {/* USER PROFILE SUMMARY CARD */}
       <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-slate-100">
@@ -129,7 +144,7 @@ export default function Dashboard() {
                   Active Member
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
+              <div className="flex items-center gap-3 text-xs text-slate-500 mt-1 flex-wrap">
                 <span className="flex items-center gap-1">
                   <Globe className="w-3.5 h-3.5 text-slate-400" />
                   {profile?.country || 'Global'}
@@ -138,6 +153,11 @@ export default function Dashboard() {
                 <span className="flex items-center gap-1 text-blue-600 font-medium">
                   <Award className="w-3.5 h-3.5" />
                   {profile?.english_level || 'Intermediate'}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1 text-slate-700 font-semibold bg-slate-100 px-2 py-0.5 rounded-md">
+                  <Clock className="w-3 h-3 text-blue-600" />
+                  {profile?.practice_time || (user?.id ? localStorage.getItem(`speakmate_practice_time_${user.id}`) : '') || 'Active: Flexible'}
                 </span>
               </div>
             </div>

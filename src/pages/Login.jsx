@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { validateEmail } from '../utils/validation';
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const { login, instantGuestSignIn, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,6 +44,18 @@ export default function Login() {
       console.error('Login failure:', err);
       setError(err.message || 'Invalid email or password.');
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickJoin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await instantGuestSignIn('English Learner', 'Global', 'Intermediate');
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err.message || 'Unable to start quick session.');
       setLoading(false);
     }
   };
@@ -128,6 +140,23 @@ export default function Login() {
           >
             <LogIn className="w-4 h-4" />
             {loading ? 'Authenticating...' : 'Sign In'}
+          </button>
+
+          <div className="relative my-4 flex items-center justify-center">
+            <div className="border-t border-slate-200 w-full" />
+            <span className="bg-white px-2 text-[11px] text-slate-400 uppercase font-semibold">
+              or
+            </span>
+            <div className="border-t border-slate-200 w-full" />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleQuickJoin}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-2"
+          >
+            Instant 1-Click Practice (No Limit)
           </button>
         </form>
 

@@ -61,6 +61,8 @@ export function useMatching() {
     }
   }, []);
 
+  const preferredPartnerRef = useRef(null);
+
   /**
    * Search for an eligible partner and dispatch call invitation
    */
@@ -77,8 +79,12 @@ export function useMatching() {
       const sessionId = sessionIdRef.current;
       const excludedArray = Array.from(excludedPartnersRef.current);
 
-      // Search eligible partner
-      const partner = await matchingService.findEligiblePartner(user.id, sessionId, excludedArray);
+      // Search eligible partner (checking preferredPartner if specified)
+      const targetPartner = preferredPartnerRef.current;
+      const partner = await matchingService.findEligiblePartner(user.id, sessionId, excludedArray, targetPartner);
+
+      // Consume preferred partner once so skip finds other members
+      preferredPartnerRef.current = null;
 
       if (!isMatchingActiveRef.current) return;
 
@@ -164,7 +170,7 @@ export function useMatching() {
   /**
    * Start practicing / begin matching engine
    */
-  const startMatching = useCallback(async () => {
+  const startMatching = useCallback(async (preferredPartner = null, mediaMode = 'both') => {
     if (!user) {
       setErrorMessage('Please login to start practicing.');
       setMatchState(MATCH_STATES.FAILED);
@@ -172,12 +178,27 @@ export function useMatching() {
     }
 
     try {
-      // Prompt camera/mic permissions check early
+      // Permission verification with audio fallback
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        stream.getTracks().forEach((t) => t.stop());
+        const wantsVideo = mediaMode !== 'audio';
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: wantsVideo,
+            audio: true,
+          });
+        } catch (vidErr) {
+          // If video failed, fallback to audio only
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: true,
+          });
+        }
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+        }
       } catch (mediaErr) {
-        setErrorMessage('Camera or microphone access is required to practice English. Please allow permissions in your browser.');
+        setErrorMessage('Microphone or camera permission was not granted. Please click Allow Camera & Mic above, or check your browser permissions.');
         setMatchState(MATCH_STATES.FAILED);
         return;
       }
@@ -186,6 +207,7 @@ export function useMatching() {
       excludedPartnersRef.current.clear();
       setAttemptCount(0);
       isMatchingActiveRef.current = true;
+      preferredPartnerRef.current = preferredPartner || null;
 
       const newSessionId = await matchingService.startMatchingSession(user.id);
       sessionIdRef.current = newSessionId;
@@ -197,7 +219,7 @@ export function useMatching() {
       setErrorMessage(err.message || 'Failed to start matching session.');
       setMatchState(MATCH_STATES.FAILED);
     }
-  }, [user, isApproved, clearTimers, searchAndConnect]);
+  }, [user, clearTimers, searchAndConnect]);
 
   /**
    * Next Partner / Skip System:

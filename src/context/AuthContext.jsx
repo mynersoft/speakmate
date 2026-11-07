@@ -126,6 +126,14 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const instantGuestSignIn = async (name, country, level) => {
+    const data = await authService.instantGuestSignIn(name, country, level);
+    if (data?.user) {
+      await loadUserData(data.user);
+    }
+    return data;
+  };
+
   const logout = async () => {
     if (user) {
       await presenceService.stopHeartbeat(user.id);
@@ -133,7 +141,7 @@ export function AuthProvider({ children }) {
     await authService.signOut();
     setUser(null);
     setProfile(null);
-    setMembership({ approved: false, role: 'member' });
+    setMembership({ approved: true, role: 'member' });
     setIncomingCall(null);
   };
 
@@ -169,6 +177,7 @@ export function AuthProvider({ children }) {
         isConfigured: isSupabaseConfigured,
         login,
         signup,
+        instantGuestSignIn,
         logout,
         refreshProfile,
         applyInviteCode,

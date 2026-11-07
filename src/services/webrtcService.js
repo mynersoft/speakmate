@@ -86,7 +86,7 @@ export class WebRTCManager {
   }
 
   /**
-   * Acquire local camera and microphone stream
+   * Acquire local camera and microphone stream with automatic audio-only fallback
    */
   async initLocalMedia({ video = true, audio = true }) {
     try {
@@ -110,14 +110,32 @@ export class WebRTCManager {
       this.localStream = await navigator.mediaDevices.getUserMedia(constraints);
       return this.localStream;
     } catch (err) {
-      console.error('getUserMedia failed:', err);
+      console.warn('Initial getUserMedia with video failed, checking audio-only fallback:', err);
+      // If video was requested and failed (e.g. no camera, permission denied for video), fallback to audio-only
+      if (video && audio) {
+        try {
+          this.localStream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+            },
+          });
+          console.info('Successfully acquired audio-only fallback stream.');
+          return this.localStream;
+        } catch (audioErr) {
+          console.error('Audio-only fallback also failed:', audioErr);
+        }
+      }
+
       let message = 'Failed to access camera or microphone.';
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        message = 'Camera or microphone permission was denied. Please allow device access in your browser settings.';
+        message = 'Camera or microphone permission was denied. Please allow device access in your browser address bar.';
       } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
         message = 'No camera or microphone found on this device.';
       } else if (err.name === 'NotReadableError') {
-        message = 'Camera or microphone is already in use by another application.';
+        message = 'Camera or microphone is currently in use by another application.';
       }
       if (this.onError) this.onError(message, err);
       throw new Error(message);

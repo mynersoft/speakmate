@@ -23,6 +23,7 @@ export default function Profile() {
     country: 'United States',
     englishLevel: 'Intermediate',
     bio: '',
+    practiceTime: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,15 +32,17 @@ export default function Profile() {
 
   useEffect(() => {
     if (profile) {
+      const savedTime = user?.id ? profileService.getPracticeTime(user.id) : '';
       setFormData({
         displayName: profile.display_name || '',
         avatarUrl: profile.avatar_url || '',
         country: profile.country || 'Global',
         englishLevel: profile.english_level || 'Intermediate',
         bio: profile.bio || '',
+        practiceTime: profile.practice_time || savedTime || '',
       });
     }
-  }, [profile]);
+  }, [profile, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

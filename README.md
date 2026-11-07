@@ -80,6 +80,7 @@ APP_URL="http://localhost:3000"
 5. In your Supabase Dashboard under **Database > Replication**, enable Realtime replication for:
    - `user_presence`
    - `call_sessions`
+6. *(Recommended)* Under **Authentication > Providers > Email**, turn **OFF** "Confirm email" to eliminate email rate limits completely for development and test registrations. SpeakMate also includes built-in rate-limit protection that bypasses email bottlenecks automatically.
 
 ---
 
