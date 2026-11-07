@@ -41,9 +41,13 @@ export default function Matching() {
     retrySearch,
   } = useMatching();
 
-  // Media permission and preview state
-  const [permissionStatus, setPermissionStatus] = useState('prompt'); // 'prompt' | 'granted' | 'denied'
-  const [mediaMode, setMediaMode] = useState('video'); // 'video' | 'audio'
+  // Media permission and preview state - Remember one-time permission in localStorage
+  const [permissionStatus, setPermissionStatus] = useState(() => {
+    return localStorage.getItem('speakmate_media_permission_granted') === 'true' ? 'granted' : 'prompt';
+  });
+  const [mediaMode, setMediaMode] = useState(() => {
+    return localStorage.getItem('speakmate_media_mode') || 'video';
+  });
   const [previewStream, setPreviewStream] = useState(null);
   const [previewVideo, setPreviewVideo] = useState(true);
   const [previewAudio, setPreviewAudio] = useState(true);
@@ -115,8 +119,90 @@ export default function Matching() {
     setMicVolume(0);
   };
 
+  // Keep video element attached to stream whenever preview stream changes
+  useEffect(() => {
+    if (previewVideoRef.current && previewStream && previewStream.getVideoTracks().length > 0) {
+      previewVideoRef.current.srcObject = previewStream;
+    }
+  }, [previewStream, previewVideo, permissionStatus]);
+
+  // One-time permission restoration on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    const restorePermissions = async () => {
+      const storedGranted = localStorage.getItem('speakmate_media_permission_granted') === 'true';
+      const storedMode = localStorage.getItem('speakmate_media_mode') || 'video';
+
+      let browserGranted = false;
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const mic = await navigator.permissions.query({ name: 'microphone' });
+          if (mic.state === 'granted') {
+            browserGranted = true;
+          }
+        } catch (_) {}
+      }
+
+      if (storedGranted || browserGranted) {
+        if (!isMounted) return;
+        setPermissionStatus('granted');
+        setMediaMode(storedMode);
+
+        // Auto-initialize preview stream quietly in background so user is ready
+        try {
+          let stream;
+          if (storedMode === 'video') {
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' },
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+              });
+            } catch (_) {
+              stream = await navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+              });
+              if (isMounted) setMediaMode('audio');
+            }
+          } else {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: false,
+              audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+            });
+          }
+
+          if (isMounted && stream) {
+            setPreviewStream(stream);
+            setPreviewAudio(true);
+            setPreviewVideo(storedMode === 'video' && stream.getVideoTracks().length > 0);
+            localStorage.setItem('speakmate_media_permission_granted', 'true');
+            setupAudioMeter(stream);
+          }
+        } catch (streamErr) {
+          console.warn('Silent preview notice:', streamErr);
+          if (streamErr.name === 'NotAllowedError' || streamErr.name === 'PermissionDeniedError') {
+            if (isMounted) {
+              localStorage.removeItem('speakmate_media_permission_granted');
+              setPermissionStatus('denied');
+              setPermissionErrorDetail(
+                'Camera or microphone permission was blocked by your browser. Please click the Lock or Camera icon in your address bar to allow access.'
+              );
+            }
+          }
+        }
+      }
+    };
+
+    restorePermissions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   /**
-   * Request media permission via explicit user click
+   * Request media permission via explicit user click and save to localStorage
    */
   const requestMediaPermission = async (mode = 'video') => {
     setIsRequestingPermission(true);
@@ -147,9 +233,9 @@ export default function Matching() {
           });
           setMediaMode('video');
           setPreviewVideo(true);
+          localStorage.setItem('speakmate_media_mode', 'video');
         } catch (vidErr) {
           console.warn('Camera failed, attempting audio-only fallback:', vidErr);
-          // Fallback to audio-only if camera device not found or denied
           stream = await navigator.mediaDevices.getUserMedia({
             video: false,
             audio: {
@@ -160,6 +246,7 @@ export default function Matching() {
           });
           setMediaMode('audio');
           setPreviewVideo(false);
+          localStorage.setItem('speakmate_media_mode', 'audio');
         }
       } else {
         // Explicit Audio-only mode
@@ -173,16 +260,15 @@ export default function Matching() {
         });
         setMediaMode('audio');
         setPreviewVideo(false);
+        localStorage.setItem('speakmate_media_mode', 'audio');
       }
+
+      // Persist that permission was granted once - member won't need to allow again
+      localStorage.setItem('speakmate_media_permission_granted', 'true');
 
       setPreviewStream(stream);
       setPreviewAudio(true);
       setPermissionStatus('granted');
-
-      // Hook up video preview if video track is present
-      if (previewVideoRef.current && stream.getVideoTracks().length > 0) {
-        previewVideoRef.current.srcObject = stream;
-      }
 
       // Hook up mic level meter
       setupAudioMeter(stream);
@@ -229,8 +315,10 @@ export default function Matching() {
 
   // Start Practicing handler
   const handleStartPractice = async () => {
-    // If not granted yet, request permission first
-    if (permissionStatus !== 'granted' || !previewStream) {
+    const isSaved = localStorage.getItem('speakmate_media_permission_granted') === 'true';
+
+    // If permission not granted and not saved, request permission
+    if (permissionStatus !== 'granted' && !isSaved) {
       await requestMediaPermission(mediaMode);
     }
 
@@ -253,6 +341,22 @@ export default function Matching() {
       cleanupAudioMeter();
     };
   }, [previewStream]);
+
+  // If navigating from Next Partner with autoStart flag, automatically begin matching
+  useEffect(() => {
+    if (location.state?.autoStart) {
+      const isSaved = localStorage.getItem('speakmate_media_permission_granted') === 'true';
+      if (isSaved || permissionStatus === 'granted') {
+        const mode = localStorage.getItem('speakmate_media_mode') || 'video';
+        if (previewStream) {
+          stopMediaStream(previewStream);
+          setPreviewStream(null);
+        }
+        cleanupAudioMeter();
+        startMatching(preferredPartner, mode);
+      }
+    }
+  }, [location.state]);
 
   const isMatchingActive = 
     matchState !== MATCH_STATES.IDLE && 
@@ -344,10 +448,12 @@ export default function Matching() {
                 <Video className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-extrabold text-slate-900">
-                Camera & Microphone Setup
+                {permissionStatus === 'granted' ? 'English Practice Lounge' : 'Camera & Microphone Setup'}
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                Grant permission so your practice partner can hear and see you during English conversations.
+                {permissionStatus === 'granted' 
+                  ? 'Your devices are connected and remembered. Click Start Practicing to meet your partner.' 
+                  : 'One-time setup: Allow camera & microphone once so your practice partner can hear and see you.'}
               </p>
             </div>
 
@@ -441,14 +547,17 @@ export default function Matching() {
               <div className="max-w-md mx-auto mb-8 space-y-4">
                 
                 {/* Status Indicator */}
-                <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
-                  <span className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    {mediaMode === 'video' ? 'Camera & Microphone Ready' : 'Microphone Ready (Audio Practice)'}
-                  </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{mediaMode === 'video' ? 'Camera & Microphone Ready' : 'Microphone Ready (Audio Practice)'}</span>
+                    <span className="text-[10px] bg-emerald-200/60 text-emerald-900 font-bold px-1.5 py-0.5 rounded-full">
+                      Saved
+                    </span>
+                  </div>
                   <button
                     onClick={() => requestMediaPermission(mediaMode === 'video' ? 'audio' : 'video')}
-                    className="text-[11px] text-blue-600 hover:text-blue-700 underline font-medium"
+                    className="text-[11px] text-blue-600 hover:text-blue-700 underline font-medium self-end sm:self-auto"
                   >
                     Switch to {mediaMode === 'video' ? 'Audio-only' : 'Video mode'}
                   </button>

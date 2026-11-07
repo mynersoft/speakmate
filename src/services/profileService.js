@@ -9,47 +9,75 @@ export const profileService = {
    * Get user profile by user UUID
    */
   async getProfile(userId) {
+    if (!userId) return null;
+
+    try {
+      const stored = localStorage.getItem(`speakmate_profile_${userId}`);
+      if (stored) return JSON.parse(stored);
+    } catch (_) {}
+
     if (!isSupabaseConfigured || !supabase) return null;
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-    if (error) {
-      if (error.code === 'PGRST116') {
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return null;
+        }
         return null;
       }
-      throw error;
+      return data;
+    } catch (_) {
+      return null;
     }
-    return data;
   },
 
   /**
    * Update profile fields
    */
   async updateProfile(userId, updates) {
-    if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase is not configured.');
+    const localProfile = {
+      id: userId,
+      display_name: updates.displayName?.trim(),
+      avatar_url: updates.avatarUrl?.trim(),
+      country: updates.country,
+      english_level: updates.englishLevel,
+      bio: updates.bio?.trim(),
+      updated_at: new Date().toISOString(),
+    };
+
+    try {
+      localStorage.setItem(`speakmate_profile_${userId}`, JSON.stringify(localProfile));
+    } catch (_) {}
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .update({
+            display_name: updates.displayName?.trim(),
+            avatar_url: updates.avatarUrl?.trim(),
+            country: updates.country,
+            english_level: updates.englishLevel,
+            bio: updates.bio?.trim(),
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', userId)
+          .select()
+          .single();
+
+        if (!error && data) return data;
+      } catch (err) {
+        console.warn('Database profile update notice:', err);
+      }
     }
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .update({
-        display_name: updates.displayName?.trim(),
-        avatar_url: updates.avatarUrl?.trim(),
-        country: updates.country,
-        english_level: updates.englishLevel,
-        bio: updates.bio?.trim(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
+    return localProfile;
   },
 
   /**

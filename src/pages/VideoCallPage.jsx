@@ -85,7 +85,7 @@ export default function VideoCallPage() {
   // Next Partner Button action: end current call and navigate to matching to trigger auto-next
   const handleNextPartner = async () => {
     await endCall();
-    navigate('/matching');
+    navigate('/matching', { state: { autoStart: true } });
   };
 
   const handleReturnDashboard = () => {
@@ -118,7 +118,7 @@ export default function VideoCallPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
-            onClick={() => navigate('/matching')}
+            onClick={() => navigate('/matching', { state: { autoStart: true } })}
             className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all"
           >
             Find Next Partner

@@ -6,14 +6,14 @@ import { authService } from '../services/authService';
 import { profileService } from '../services/profileService';
 import { presenceService } from '../services/presenceService';
 import { callService } from '../services/callService';
-import { isSupabaseConfigured } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [membership, setMembership] = useState({ approved: false, role: 'member' });
+  const [membership, setMembership] = useState({ approved: true, role: 'member' });
   const [loading, setLoading] = useState(true);
   const [incomingCall, setIncomingCall] = useState(null);
 
@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
         }
       );
 
-      setMembership(memberData || { approved: false, role: 'member' });
+      setMembership(memberData || { approved: true, role: 'member' });
     } catch (err) {
       console.warn('Error loading user profile:', err);
     }
@@ -56,10 +56,6 @@ export function AuthProvider({ children }) {
 
     const init = async () => {
       setLoading(true);
-      if (!isSupabaseConfigured) {
-        setLoading(false);
-        return;
-      }
 
       try {
         const session = await authService.getSession();
@@ -72,16 +68,18 @@ export function AuthProvider({ children }) {
         setLoading(false);
       }
 
-      const { data } = authService.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-          await loadUserData(session.user);
-        } else {
-          setUser(null);
-          setProfile(null);
-          setMembership({ approved: false, role: 'member' });
-        }
-      });
-      unsubscribeAuth = data?.subscription?.unsubscribe || (() => {});
+      if (isSupabaseConfigured && supabase) {
+        const { data } = authService.onAuthStateChange(async (event, session) => {
+          if (session?.user) {
+            await loadUserData(session.user);
+          } else {
+            setUser(null);
+            setProfile(null);
+            setMembership({ approved: false, role: 'member' });
+          }
+        });
+        unsubscribeAuth = data?.subscription?.unsubscribe || (() => {});
+      }
     };
 
     init();

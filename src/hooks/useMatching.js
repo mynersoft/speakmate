@@ -195,10 +195,18 @@ export function useMatching() {
           });
         }
         if (stream) {
+          try {
+            localStorage.setItem('speakmate_media_permission_granted', 'true');
+          } catch (_) {}
           stream.getTracks().forEach((t) => t.stop());
         }
       } catch (mediaErr) {
-        setErrorMessage('Microphone or camera permission was not granted. Please click Allow Camera & Mic above, or check your browser permissions.');
+        if (mediaErr.name === 'NotAllowedError' || mediaErr.name === 'PermissionDeniedError') {
+          try {
+            localStorage.removeItem('speakmate_media_permission_granted');
+          } catch (_) {}
+        }
+        setErrorMessage('Microphone or camera permission was not granted. Please check your browser address bar permissions.');
         setMatchState(MATCH_STATES.FAILED);
         return;
       }

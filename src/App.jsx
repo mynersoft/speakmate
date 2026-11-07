@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import IncomingCall from './components/IncomingCall';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Pages
+// Existing Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -19,6 +19,23 @@ import VideoCallPage from './pages/VideoCallPage';
 import Settings from './pages/Settings';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
+
+// Learn, Earn & Monetization Pages
+import Courses from './pages/Courses';
+import CourseDetails from './pages/CourseDetails';
+import CoursePlayer from './pages/CoursePlayer';
+import MyCourses from './pages/MyCourses';
+import LiveClasses from './pages/LiveClasses';
+import LiveClassroom from './pages/LiveClassroom';
+import MyClasses from './pages/MyClasses';
+import Mentors from './pages/Mentors';
+import MentorProfile from './pages/MentorProfile';
+import MentorApply from './pages/MentorApply';
+import MentorDashboard from './pages/MentorDashboard';
+import Pricing from './pages/Pricing';
+import LearningTools from './pages/LearningTools';
+import Progress from './pages/Progress';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
@@ -35,13 +52,20 @@ export default function App() {
           {/* Main View Router */}
           <main className="flex-1">
             <Routes>
-              {/* Public Routes */}
+              {/* Public & Marketplaces */}
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/courses" element={<Courses />} />
+              <Route path="/courses/:courseId" element={<CourseDetails />} />
+              <Route path="/classes" element={<LiveClasses />} />
+              <Route path="/mentors" element={<Mentors />} />
+              <Route path="/mentors/:mentorId" element={<MentorProfile />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/tools" element={<LearningTools />} />
 
               {/* Protected Member Routes */}
               <Route
@@ -77,7 +101,7 @@ export default function App() {
                 }
               />
 
-              {/* Protected Practice Routes */}
+              {/* Practice & Calling */}
               <Route
                 path="/matching"
                 element={
@@ -91,6 +115,76 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <VideoCallPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Learning Hub & Student Routes */}
+              <Route
+                path="/learn/courses/:courseId"
+                element={
+                  <ProtectedRoute>
+                    <CoursePlayer />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-courses"
+                element={
+                  <ProtectedRoute>
+                    <MyCourses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-classes"
+                element={
+                  <ProtectedRoute>
+                    <MyClasses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/classroom/:classId"
+                element={
+                  <ProtectedRoute>
+                    <LiveClassroom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/progress"
+                element={
+                  <ProtectedRoute>
+                    <Progress />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Mentor Studio & Applications */}
+              <Route
+                path="/mentor/apply"
+                element={
+                  <ProtectedRoute>
+                    <MentorApply />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/mentor/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <MentorDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Admin Portal */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
                   </ProtectedRoute>
                 }
               />

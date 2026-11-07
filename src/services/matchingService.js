@@ -12,7 +12,7 @@ export const matchingService = {
    */
   async startMatchingSession(userId) {
     if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase client is not configured.');
+      return `session-${Date.now()}`;
     }
 
     // Set user presence available

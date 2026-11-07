@@ -2,6 +2,7 @@
  * Call Session and Invitation Service
  */
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { SAMPLE_MEMBERS } from './presenceService';
 
 // In-memory call sessions for offline/sample testing or non-UUID test partners
 const localCallSessions = new Map();
@@ -91,8 +92,18 @@ export const callService = {
    * Accept an incoming call request
    */
   async acceptCall(callId, userId) {
+    if (localCallSessions.has(callId)) {
+      const sim = localCallSessions.get(callId);
+      sim.status = 'accepted';
+      sim.accepted_at = new Date().toISOString();
+      sim.started_at = new Date().toISOString();
+      const listener = localCallListeners.get(callId);
+      if (listener) listener(sim);
+      return true;
+    }
+
     if (!isSupabaseConfigured || !supabase) {
-      throw new Error('Supabase client is not configured.');
+      return true;
     }
 
     const { data, error } = await supabase.rpc('accept_call', {
@@ -194,11 +205,11 @@ export const callService = {
   async getCallSession(callId) {
     if (localCallSessions.has(callId)) {
       const local = localCallSessions.get(callId);
-      // Return simulated partner
+      const matchedSample = SAMPLE_MEMBERS.find((m) => m.user_id === local.receiver_id || m.id === local.receiver_id);
       return {
         ...local,
         caller: { display_name: 'You', country: 'Global' },
-        receiver: {
+        receiver: matchedSample || {
           display_name: 'Elena Rostova',
           country: 'Spain',
           english_level: 'Intermediate',
