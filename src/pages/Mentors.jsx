@@ -148,13 +148,29 @@ export default function Mentors() {
                   </p>
                 </div>
 
+                {/* Study Institute */}
+                {m.study_institute && (
+                  <div className="flex items-center justify-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 max-w-full">
+                    <GraduationCap className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                    <span className="truncate">{m.study_institute}</span>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-center gap-1.5 text-xs text-amber-500 font-bold">
                   <Star className="w-4 h-4 fill-amber-400" />
                   <span>{m.rating}</span>
                   <span className="text-slate-400 font-normal">({m.review_count})</span>
                 </div>
 
-                <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">
+                {/* Certificates badge */}
+                {m.certificates?.length > 0 && (
+                  <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                    {m.certificates.length} Verified {m.certificates.length === 1 ? 'Certificate' : 'Certificates'}
+                  </div>
+                )}
+
+                <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
                   {m.bio}
                 </p>
 
@@ -167,6 +183,11 @@ export default function Mentors() {
                       {sk}
                     </span>
                   ))}
+                  {(m.skills || []).length > 3 && (
+                    <span className="px-1.5 py-0.5 bg-slate-100 text-slate-400 rounded-md text-[10px] font-medium">
+                      +{(m.skills || []).length - 3}
+                    </span>
+                  )}
                 </div>
               </div>
 
