@@ -172,8 +172,9 @@ export function useMatching() {
    */
   const startMatching = useCallback(async (preferredPartner = null, mediaMode = 'both') => {
     if (!user) {
-      setErrorMessage('Please login to start practicing.');
+      setErrorMessage('Please login first to start practicing with other members.');
       setMatchState(MATCH_STATES.FAILED);
+      navigate('/login', { state: { from: { pathname: '/matching' } } });
       return;
     }
 

@@ -60,7 +60,14 @@ export function AuthProvider({ children }) {
       try {
         const session = await authService.getSession();
         if (session?.user) {
-          await loadUserData(session.user);
+          // If a guest/anonymous session was previously stored, clear it to enforce genuine login
+          if (session.user.id && String(session.user.id).startsWith('guest-')) {
+            await authService.signOut();
+            setUser(null);
+            setProfile(null);
+          } else {
+            await loadUserData(session.user);
+          }
         }
       } catch (err) {
         console.warn('Init auth error:', err);

@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { validateEmail } from '../utils/validation';
 
 export default function Login() {
-  const { login, instantGuestSignIn, user } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -15,6 +15,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || '/dashboard';
+  const cameFromPractice = from.includes('/matching') || from.includes('/call') || from.includes('/members');
 
   // If already authenticated, redirect via Navigate component
   if (user) {
@@ -30,7 +31,7 @@ export default function Login() {
     }
 
     if (!password) {
-      setError('Please enter your password');
+      setError('Please enter your password.');
       return;
     }
 
@@ -41,28 +42,9 @@ export default function Login() {
       await login(email.trim(), password);
       navigate(from, { replace: true });
     } catch (err) {
-      console.warn('Direct login notice, initiating instant auto-session fallback:', err);
-      try {
-        await instantGuestSignIn(email.trim().split('@')[0] || 'Learner', 'Global', 'Intermediate');
-        navigate(from, { replace: true });
-        return;
-      } catch (fallbackErr) {
-        console.error('Login failure:', fallbackErr);
-        setError(fallbackErr.message || 'Unable to sign in. Please click Instant Practice below.');
-      }
+      console.error('Login error:', err);
+      setError(err.message || 'Login failed. Please verify your email and password.');
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickJoin = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await instantGuestSignIn('English Learner', 'Global', 'Intermediate');
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError(err.message || 'Unable to start quick session.');
       setLoading(false);
     }
   };
@@ -80,9 +62,16 @@ export default function Login() {
             Welcome Back
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Sign in to your SpeakMate learning account
+            Sign in to your SpeakMate account to start practicing English
           </p>
         </div>
+
+        {cameFromPractice && (
+          <div className="mb-6 p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-800 text-xs flex items-center gap-2.5 font-medium leading-relaxed">
+            <Video className="w-4 h-4 text-blue-600 shrink-0" />
+            <span>Please log in to your account first before speaking with practice partners.</span>
+          </div>
+        )}
 
         {error && (
           <div className="mb-6 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
@@ -192,28 +181,12 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="relative my-4 flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-2 text-[11px] text-slate-400 uppercase font-semibold">
-              or
-            </span>
-            <div className="border-t border-slate-200 w-full" />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleQuickJoin}
-            disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-2"
-          >
-            Instant 1-Click Practice (No Login Required)
-          </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-500">
           Not a member yet?{' '}
           <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700">
-            Request an invite here
+            Create a free account here
           </Link>
         </div>
       </div>

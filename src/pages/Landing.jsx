@@ -50,11 +50,12 @@ export default function Landing() {
         {/* CTA Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            to={user ? "/matching" : "/register"}
+            to={user ? "/matching" : "/login"}
+            state={!user ? { from: { pathname: "/matching" } } : undefined}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-base shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-95"
           >
             <Sparkles className="w-5 h-5" />
-            {user ? "Start Practicing Now" : "Start Practicing Free"}
+            {user ? "Start Practicing Now" : "Log In to Start Practicing"}
           </Link>
 
           <Link
@@ -123,10 +124,11 @@ export default function Landing() {
               </p>
             </div>
             <Link
-              to="/matching"
+              to={user ? "/matching" : "/login"}
+              state={!user ? { from: { pathname: "/matching" } } : undefined}
               className="inline-flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-700"
             >
-              Start Practicing <ArrowRight className="w-4 h-4" />
+              {user ? "Start Practicing" : "Log In to Practice"} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 

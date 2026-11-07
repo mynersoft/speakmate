@@ -362,6 +362,26 @@ export default function Matching() {
     matchState !== MATCH_STATES.IDLE && 
     matchState !== MATCH_STATES.STOPPED;
 
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-white rounded-3xl border border-slate-200 text-center space-y-4 shadow-xl">
+        <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
+          <Lock className="w-6 h-6" />
+        </div>
+        <h2 className="text-xl font-extrabold text-slate-900">Please Log In First</h2>
+        <p className="text-xs text-slate-500 leading-relaxed">
+          You must log in to your SpeakMate account first to start 1-on-1 audio and video speaking sessions with other members.
+        </p>
+        <button
+          onClick={() => navigate('/login', { state: { from: location } })}
+          className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all"
+        >
+          Sign In to Practice
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       

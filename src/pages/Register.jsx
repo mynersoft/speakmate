@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { validateEmail, validatePassword, validateDisplayName } from '../utils/validation';
 
 export default function Register() {
-  const { signup, instantGuestSignIn, user } = useAuth();
+  const { signup, user } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -61,36 +61,11 @@ export default function Register() {
       setSuccessNotice(true);
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1500);
+      }, 1200);
     } catch (err) {
-      console.warn('Registration notice, activating instant fallback session:', err);
-      try {
-        await instantGuestSignIn(formData.displayName || 'English Learner', formData.country || 'Global', formData.englishLevel || 'Intermediate');
-        setSuccessNotice(true);
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1200);
-      } catch (fallbackErr) {
-        console.error('Registration error:', fallbackErr);
-        setGeneralError(fallbackErr.message || 'Failed to create account. Please check your credentials.');
-      }
+      console.error('Registration error:', err);
+      setGeneralError(err.message || 'Failed to create account. Please check your credentials.');
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickJoin = async () => {
-    setLoading(true);
-    setGeneralError('');
-    try {
-      await instantGuestSignIn(
-        formData.displayName || 'English Learner',
-        formData.country || 'Global',
-        formData.englishLevel || 'Intermediate'
-      );
-      navigate('/dashboard');
-    } catch (err) {
-      setGeneralError(err.message || 'Unable to start quick session.');
       setLoading(false);
     }
   };
@@ -257,23 +232,6 @@ export default function Register() {
             {loading ? 'Creating Member Profile...' : 'Complete Registration'}
           </button>
 
-          <div className="relative my-4 flex items-center justify-center">
-            <div className="border-t border-slate-200 w-full" />
-            <span className="bg-white px-2 text-[11px] text-slate-400 uppercase font-semibold">
-              or instant practice
-            </span>
-            <div className="border-t border-slate-200 w-full" />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleQuickJoin}
-            disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-all flex items-center justify-center gap-2"
-          >
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            Instant 1-Click Practice (No Email / No Limit)
-          </button>
         </form>
 
         <div className="mt-6 text-center text-xs text-slate-500">
