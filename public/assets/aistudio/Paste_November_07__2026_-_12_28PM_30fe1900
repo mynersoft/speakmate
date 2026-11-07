@@ -1,0 +1,1360 @@
+# SPEAKMATE — COMPLETE FULL-STACK ENGLISH LEARNING PLATFORM
+## FINAL MASTER DEVELOPMENT PROMPT
+
+You are an expert full-stack software engineer, system architect, UI/UX designer, database engineer, WebRTC engineer, payment integration specialist, and application security engineer.
+
+Your task is to build a complete, modern, secure, responsive English learning platform named **SpeakMate**.
+
+This application combines:
+
+1. PRACTICE — English speaking with other members.
+2. LEARN — English courses and mentor-led classes.
+3. EARN — Mentors teach students and earn money.
+
+The platform must support free and premium memberships, free and paid classes, free and paid courses, student enrollment, mentor earnings, and platform commissions.
+
+This is a complete application development task, not a UI-only prototype.
+
+==================================================
+PART 1 — MOST IMPORTANT: EXISTING PROJECT INTEGRATION
+==================================================
+
+Before writing or modifying any code, inspect the entire existing project.
+
+IMPORTANT: Do not assume that the project is empty.
+
+The user may already have source code, components, pages, APIs, database tables, authentication, or partially implemented features.
+
+### A. Existing Project Inspection
+
+Inspect:
+
+- Complete project directory.
+- Existing source files.
+- Framework and framework version.
+- Package.json and installed dependencies.
+- Existing routes and pages.
+- UI components.
+- Hooks and utilities.
+- API endpoints.
+- Authentication system.
+- User roles and permissions.
+- Database configuration and schema.
+- Existing database migrations.
+- Existing WebRTC implementation.
+- STUN/TURN configuration.
+- Realtime signaling.
+- Storage configuration.
+- Existing deployment configuration.
+
+Identify:
+
+1. What already works.
+2. What partially works.
+3. What is broken.
+4. What is missing.
+5. What needs improvement.
+6. What can be reused.
+
+### B. Preserve Existing Code
+
+If any existing functionality is implemented:
+
+- Preserve it.
+- Reuse it.
+- Extend it.
+- Integrate it with new features.
+- Improve it without unnecessarily rewriting it.
+
+Never unnecessarily delete working code.
+
+Never replace a working feature with mock data.
+
+Never create duplicate components, routes, database tables, APIs, or authentication systems.
+
+If an existing feature already satisfies the requirements, keep it and test it.
+
+### C. Adapt to Existing Technology
+
+The existing project architecture takes priority.
+
+- If the project uses React and Vite, continue with React and Vite.
+- If it uses Next.js, continue with Next.js.
+- If Supabase is already configured, reuse it.
+- If another database is already configured, inspect whether it can safely support the new requirements before changing it.
+- If authentication exists, extend the existing authentication.
+- If JavaScript is used, continue with JavaScript.
+- Do not migrate JavaScript to TypeScript unnecessarily.
+- Preserve the existing styling system and design language.
+- Avoid unnecessary dependencies.
+
+Do not migrate the entire project simply because another stack is preferred.
+
+### D. Database Safety
+
+Before modifying the database:
+
+- Inspect existing tables and relationships.
+- Reuse existing tables.
+- Add missing fields and tables only when necessary.
+- Preserve existing user records.
+- Preserve existing transaction and enrollment records.
+- Create migration files.
+- Use backward-compatible migrations.
+- Never reset or drop the production database.
+- Never delete existing data without explicit authorization.
+
+### E. Implementation Decision
+
+Follow this logic:
+
+- If the project is empty: build SpeakMate from scratch.
+- If some features exist: preserve them and build the missing features.
+- If all core features exist: integrate the new subscription, mentor, class, course, and payment systems.
+- If an existing feature is broken: repair it without damaging unrelated functionality.
+
+The final result must be one unified SpeakMate application.
+
+==================================================
+PART 2 — PRODUCT IDENTITY
+==================================================
+
+Application Name: SpeakMate
+
+Tagline: Practice English. Connect. Improve.
+
+Product Description:
+
+SpeakMate is an English learning and speaking practice platform where users can:
+
+- Practice English with other available members through audio/video conversations.
+- Join free and paid English classes.
+- Learn from approved mentors.
+- Purchase English courses.
+- Become mentors after approval.
+- Create free and paid classes.
+- Sell courses.
+- Earn money through teaching.
+- Track learning progress.
+
+Business Model: HYBRID.
+
+Revenue sources:
+
+1. Premium Membership Subscription.
+2. Paid Live Class Admission.
+3. Paid Course Enrollment.
+4. Configurable Platform Commission.
+
+==================================================
+PART 3 — TECHNOLOGY AND ARCHITECTURE
+==================================================
+
+If the existing project is empty, use the following preferred stack:
+
+Frontend:
+- React.
+- Vite.
+- JavaScript only.
+- Tailwind CSS.
+- React Router.
+- Lucide React.
+- React Hot Toast.
+
+Backend:
+- Supabase Authentication.
+- Supabase PostgreSQL.
+- Supabase Realtime.
+- Supabase Edge Functions.
+- Supabase Storage.
+
+Communication:
+- WebRTC.
+- RTCPeerConnection.
+- getUserMedia.
+- SDP offer/answer.
+- ICE candidate exchange.
+- STUN/TURN support.
+
+Deployment:
+- Vercel-compatible frontend.
+- Supabase backend.
+
+Do not use MongoDB when starting from scratch.
+
+Do not use TypeScript when starting from scratch.
+
+Use a clean, modular, maintainable architecture.
+
+If an existing project uses a different architecture, follow PART 1 and adapt these requirements instead of migrating unnecessarily.
+
+==================================================
+PART 4 — USER ROLES AND PERMISSIONS
+==================================================
+
+Implement:
+
+1. Guest.
+2. Free Member.
+3. Premium Member.
+4. Student.
+5. Mentor.
+6. Admin.
+
+Important:
+
+- Premium Member is a subscription status, not necessarily a permanent user role.
+- A Member can also be a Student.
+- An approved Mentor can also enroll in courses as a Student.
+- A Mentor must not automatically become an Admin.
+- Mentor access requires Admin approval.
+- Admin permissions must be validated by the backend.
+
+Use secure role-based access control.
+
+==================================================
+PART 5 — AUTHENTICATION AND PROFILE
+==================================================
+
+Implement:
+
+- User registration.
+- Login.
+- Logout.
+- Email verification.
+- Forgot password.
+- Reset password.
+- Secure session management.
+- Profile editing.
+- Profile picture upload.
+- Display name.
+- English proficiency level.
+- Learning goals.
+- Account settings.
+- Privacy settings.
+
+Protect private routes.
+
+Use the existing authentication system if one exists.
+
+Never expose private backend credentials in frontend code.
+
+==================================================
+PART 6 — DASHBOARD AND MAIN NAVIGATION
+==================================================
+
+Create a professional dashboard.
+
+Main navigation:
+
+- Home.
+- Practice.
+- Learn.
+- Earn.
+- Mentors.
+- Courses.
+- Live Classes.
+- My Courses.
+- My Classes.
+- Subscription.
+- Notifications.
+- Profile.
+- Settings.
+
+Show navigation according to user permissions.
+
+Dashboard widgets:
+
+- Membership status.
+- Practice minutes.
+- Speaking sessions.
+- Learning progress.
+- Upcoming classes.
+- Enrolled courses.
+- Notifications.
+- Mentor information, when applicable.
+
+Keep PRACTICE, LEARN, and EARN as the three major product sections.
+
+==================================================
+PART 7 — PRACTICE: AUTOMATIC SPEAKING PARTNER
+==================================================
+
+Build a real-time English speaking practice system.
+
+### Partner Matching
+
+- Automatically find available eligible members.
+- Match two members.
+- Support audio and video calls.
+- Show partner information according to privacy settings.
+- Display matching status.
+- Show waiting queue.
+- Allow users to stop searching.
+
+### Skip / Next Partner
+
+This is a critical feature.
+
+When a user presses Skip or Next Partner:
+
+1. End the current call properly.
+2. Stop local media tracks.
+3. Close the RTCPeerConnection.
+4. Remove old signaling subscriptions.
+5. Clear call state.
+6. Temporarily exclude the previous partner from the current matching session.
+7. Automatically find the next available member.
+8. Start the next partner request.
+
+Do not require users to manually restart the matching process after every skip.
+
+### Automatic Partner Fallback
+
+If a partner:
+
+- Does not answer.
+- Rejects the request.
+- Goes offline.
+- Becomes busy.
+- Disconnects.
+- Fails to connect.
+
+Automatically try another eligible available member.
+
+Use a configurable request timeout, default 15 seconds.
+
+### Matching Rules
+
+- Do not match a user with themselves.
+- Do not match offline members.
+- Do not match busy members.
+- Do not match blocked members.
+- Do not match members who are already in another call.
+- Avoid repeatedly matching the same skipped partner.
+- Prevent duplicate active calls.
+- Use atomic server-side matching.
+- Respect subscription practice limits.
+
+### Call Controls
+
+- Microphone mute/unmute.
+- Camera on/off.
+- Switch audio/video mode.
+- End call.
+- Skip partner.
+- Call duration.
+- Connection status.
+- Network quality indicator.
+- Reconnect option.
+
+### Matching States
+
+idle, searching, requesting, ringing, accepted, connecting, connected, skipped, rejected, missed, ended, stopped, no_partner_available, failed.
+
+### Call History
+
+Display:
+
+- Partner.
+- Date.
+- Duration.
+- Call type.
+- Call status.
+
+Use an approved, age-appropriate member community. Do not create unrestricted anonymous public random video chat.
+
+==================================================
+PART 8 — HYBRID SUBSCRIPTION SYSTEM
+==================================================
+
+Build a complete subscription system.
+
+### Free Membership
+
+- Basic speaking practice.
+- Daily practice time limit.
+- Access to eligible free classes.
+- Access to free courses.
+- Browse paid courses.
+- Purchase paid courses separately.
+- Basic learning tools.
+
+### Premium Membership
+
+- Higher or unlimited practice time according to plan.
+- Premium speaking benefits.
+- Access to selected premium learning features.
+- Eligible free classes.
+- Priority matching if enabled by Admin.
+- Paid courses can still require separate admission payments.
+
+### Subscription Plans
+
+- Monthly.
+- Quarterly.
+- Yearly.
+
+Admin can:
+
+- Create membership plans.
+- Edit plan names.
+- Set prices.
+- Set duration.
+- Configure daily practice limits.
+- Configure plan benefits.
+- Activate/deactivate plans.
+- Configure discounts.
+- Manage subscriptions.
+- Extend subscriptions.
+- Cancel subscriptions.
+- View expired subscriptions.
+
+Member can:
+
+- View current plan.
+- Upgrade membership.
+- View expiry date.
+- View remaining practice allowance.
+- View subscription history.
+- View payment history.
+- Renew membership.
+
+### Subscription Rules
+
+- Backend must validate subscription status.
+- Backend must enforce practice limits.
+- Expired Premium memberships automatically return to Free.
+- Expired memberships must not delete user accounts.
+- Expired memberships must not delete course enrollment.
+- Membership purchase must require verified payment.
+- Prevent duplicate subscription transactions.
+
+==================================================
+PART 9 — LEARN: ENGLISH COURSE MARKETPLACE
+==================================================
+
+Build a complete course marketplace.
+
+### Course Types
+
+- Free Course.
+- Paid Course.
+- Recorded Course.
+- Live Course.
+- Hybrid Course.
+
+### Course Information
+
+- Course title.
+- Description.
+- Thumbnail.
+- Mentor.
+- Category.
+- Learning level.
+- Price.
+- Duration.
+- Learning outcomes.
+- Curriculum.
+- Chapters.
+- Lessons.
+- Recorded videos.
+- PDF resources.
+- Attachments.
+- Enrollment capacity where applicable.
+
+### Course Features
+
+- Browse courses.
+- Search courses.
+- Filter by category.
+- Filter by learning level.
+- Filter by price.
+- Filter by mentor.
+- Course details.
+- Free enrollment.
+- Paid enrollment.
+- Course curriculum.
+- My Courses.
+- Lesson progress.
+- Course completion.
+- Course materials.
+- Assignments.
+- Quizzes.
+- Course announcements.
+- Certificate system.
+
+### Course Access
+
+- Free courses can be enrolled in without payment.
+- Paid courses require verified payment.
+- Only enrolled students can access restricted course content.
+- Course access must follow the course's defined access policy.
+- Premium subscription expiry must not automatically revoke a previously purchased course.
+
+==================================================
+PART 10 — MENTOR REGISTRATION AND MANAGEMENT
+==================================================
+
+Build a complete mentor system.
+
+### Become a Mentor
+
+Members can submit mentor applications.
+
+Application fields:
+
+- Display name.
+- Profile photo.
+- Teaching experience.
+- Teaching skills.
+- English proficiency.
+- Introduction.
+- Optional introduction video.
+
+### Approval Workflow
+
+Pending → Approved / Rejected / Suspended.
+
+Only approved active mentors can publish courses and classes.
+
+### Mentor Profile
+
+- Name.
+- Profile picture.
+- Bio.
+- Teaching experience.
+- Skills.
+- Courses.
+- Free classes.
+- Paid classes.
+- Student count.
+- Rating.
+- Reviews.
+
+### Mentor Dashboard
+
+- Create class.
+- Edit class.
+- Create course.
+- Edit course.
+- Publish/unpublish.
+- Manage students.
+- View enrollment.
+- View attendance.
+- Manage schedules.
+- Start/end live classes.
+- View earnings.
+- Request payout.
+- View payment history.
+- Read student feedback.
+
+==================================================
+PART 11 — FREE LIVE CLASS SYSTEM
+==================================================
+
+Mentors can create FREE live classes.
+
+### Class Creation
+
+- Title.
+- Description.
+- Topic.
+- Learning level.
+- Date.
+- Start time.
+- Duration.
+- Maximum students.
+- Thumbnail.
+- Registration deadline.
+
+### Free Class Workflow
+
+1. Mentor creates a free class.
+2. Class follows Admin publishing/approval settings.
+3. Students browse available classes.
+4. Students register for free.
+5. System confirms registration.
+6. Student receives confirmation.
+7. Only registered students can join.
+8. Mentor starts the class.
+9. Attendance is recorded.
+10. Mentor ends the class.
+
+### Features
+
+- Seat availability.
+- Capacity limit.
+- Waiting list.
+- Registration cancellation.
+- Class reminder.
+- Student list.
+- Attendance history.
+- Class cancellation.
+
+Class statuses:
+
+Draft, Pending Approval, Published, Full, Live, Completed, Cancelled.
+
+Free classes must not generate paid-class revenue.
+
+==================================================
+PART 12 — PAID LIVE CLASS SYSTEM
+==================================================
+
+Mentors can create paid classes.
+
+### Paid Class Fields
+
+- Title.
+- Description.
+- Topic.
+- Learning level.
+- Schedule.
+- Duration.
+- Maximum capacity.
+- Admission price.
+- Thumbnail.
+- Registration deadline.
+- Cancellation policy.
+
+### Admission Workflow
+
+1. Student browses paid classes.
+2. Student opens class details.
+3. Student selects Buy Admission.
+4. Student completes payment.
+5. Backend verifies payment.
+6. Backend creates confirmed enrollment.
+7. Student receives confirmation.
+8. Class appears in My Classes.
+9. Student can join at the scheduled time.
+10. Attendance is recorded.
+
+### Security
+
+- Only confirmed enrolled students can join.
+- Prevent duplicate enrollment.
+- Prevent duplicate transactions.
+- Prevent overbooking.
+- Do not grant access for pending payment.
+- Verify class capacity on the backend.
+- Do not trust frontend enrollment state.
+
+==================================================
+PART 13 — LIVE CLASSROOM
+==================================================
+
+Build a real live classroom.
+
+### Features
+
+- Mentor video/audio.
+- Student video/audio according to class permissions.
+- Participant list.
+- Microphone controls.
+- Camera controls.
+- Class timer.
+- Attendance.
+- Mentor controls.
+- Student controls.
+- Connection status.
+- Leave class.
+- End class.
+- Remove disruptive participants.
+- Mute participants when appropriate.
+- Class announcements.
+
+### Mentor Permissions
+
+- Start class.
+- End class.
+- Manage participants.
+- Control classroom permissions.
+- View attendance.
+- Remove disruptive participants.
+
+### Student Permissions
+
+- Join eligible classes.
+- Mute/unmute microphone.
+- Enable/disable camera.
+- Ask permitted questions.
+- Leave class.
+
+### Scaling
+
+For very small classes, a limited peer-to-peer implementation may be used.
+
+For larger classes, design the architecture for future SFU integration.
+
+Do not assume peer-to-peer mesh WebRTC can scale to large classrooms.
+
+Do not record calls or classes by default.
+
+==================================================
+PART 14 — EARN: MENTOR COURSE AND CLASS REVENUE
+==================================================
+
+Build a complete mentor earning system.
+
+Revenue sources:
+
+- Paid live classes.
+- Paid courses.
+
+Admin configures platform commission.
+
+Example:
+
+Class price: 1000 BDT.
+Platform commission: 20%.
+Mentor earning: 800 BDT.
+
+The commission percentage must be configurable.
+
+### Mentor Earnings Dashboard
+
+- Total sales.
+- Gross revenue.
+- Platform commission.
+- Net earnings.
+- Pending earnings.
+- Available balance.
+- Paid earnings.
+- Payout requests.
+- Payout history.
+
+### Admin Controls
+
+- Set commission.
+- Review earnings.
+- Review payout requests.
+- Approve/reject payouts.
+- Record completed payments.
+- View mentor transaction history.
+
+Maintain a secure financial ledger.
+
+Never mark a payout completed without actual payment confirmation.
+
+==================================================
+PART 15 — PAYMENT SYSTEM FOR BANGLADESH
+==================================================
+
+Prepare payment integration for:
+
+- bKash.
+- Nagad.
+- Rocket.
+- Bank/card gateway.
+
+Use official provider APIs when credentials are available.
+
+### Payment Purposes
+
+- Premium subscription.
+- Paid course.
+- Paid live class.
+
+### Payment Status
+
+- Initiated.
+- Pending.
+- Successful.
+- Failed.
+- Cancelled.
+- Refunded.
+
+### Payment Features
+
+- Transaction ID.
+- Invoice.
+- Payment history.
+- Verification.
+- Refund status.
+- Webhook processing.
+
+### Security
+
+- Never trust frontend payment success.
+- Verify payments server-side.
+- Validate transaction IDs.
+- Prevent duplicate transactions.
+- Use idempotent payment processing.
+- Verify webhook signatures when supported.
+- Never store unnecessary sensitive payment data.
+
+If provider credentials are missing, build the integration architecture and explain the setup requirements.
+
+Do not create fake payment success.
+
+==================================================
+PART 16 — ADMIN DASHBOARD
+==================================================
+
+Create a complete Admin Dashboard.
+
+### Overview Statistics
+
+- Total members.
+- Active members.
+- Free members.
+- Premium members.
+- Online members.
+- Total mentors.
+- Pending mentor applications.
+- Total courses.
+- Total classes.
+- Free class registrations.
+- Paid class enrollments.
+- Total revenue.
+- Pending payments.
+- Mentor payouts.
+
+### Admin Management
+
+- Members.
+- Mentors.
+- Mentor applications.
+- Membership plans.
+- Subscriptions.
+- Courses.
+- Classes.
+- Enrollments.
+- Payments.
+- Commission.
+- Mentor earnings.
+- Payout requests.
+- Reports.
+- Notifications.
+- Platform settings.
+
+Admin can:
+
+- Approve/reject mentors.
+- Suspend users.
+- Approve/reject courses.
+- Moderate classes.
+- Manage subscriptions.
+- Review payments.
+- Configure commission.
+- Approve payouts.
+- View analytics.
+- Manage platform settings.
+
+All Admin permissions must be verified server-side.
+
+==================================================
+PART 17 — ENGLISH LEARNING TOOLS
+==================================================
+
+Add English learning features:
+
+- Daily Speaking Topics.
+- Daily Vocabulary.
+- Word Meanings.
+- Pronunciation Guidance.
+- Grammar Practice.
+- Listening Practice.
+- Speaking Challenges.
+- Daily Quiz.
+- Common English Sentences.
+- Interview Preparation.
+- Business English.
+- Beginner Learning Path.
+- Intermediate Learning Path.
+- Advanced Learning Path.
+
+### AI Features — Optional Advanced Module
+
+Design the system so future AI integrations can provide:
+
+- Speaking feedback.
+- Pronunciation feedback.
+- Grammar suggestions.
+- Vocabulary recommendations.
+- Practice summaries.
+
+Do not claim AI feedback works until an actual AI provider is configured and tested.
+
+==================================================
+PART 18 — PROGRESS, GAMIFICATION AND COMMUNITY
+==================================================
+
+Implement:
+
+### Speaking Progress
+
+- Total practice minutes.
+- Total speaking sessions.
+- Daily practice history.
+- Weekly progress.
+- Monthly progress.
+- Learning streak.
+- Speaking level.
+
+### Gamification
+
+- Points.
+- Badges.
+- Achievement system.
+- Learning streaks.
+- Optional leaderboard.
+
+### Learning Community
+
+- Learning posts.
+- Discussion.
+- English questions.
+- Practice challenges.
+- Admin announcements.
+
+Community content must be moderated.
+
+==================================================
+PART 19 — NOTIFICATION SYSTEM
+==================================================
+
+Implement in-app notifications.
+
+Events:
+
+- Partner found.
+- Incoming call.
+- Subscription activated.
+- Subscription expiring.
+- Subscription expired.
+- Payment successful.
+- Payment failed.
+- Free class registration.
+- Paid class admission.
+- Course enrollment.
+- Upcoming class reminder.
+- Class cancelled.
+- Mentor application approved/rejected.
+- New course published.
+- Payout approved/rejected.
+- Admin announcement.
+
+Use the existing notification system if available.
+
+Email and push notifications can be added as optional integrations.
+
+==================================================
+PART 20 — RATINGS AND REVIEWS
+==================================================
+
+Implement:
+
+- Mentor ratings.
+- Course reviews.
+- Class feedback.
+- Student reviews.
+
+Rules:
+
+- Only eligible enrolled students can submit reviews.
+- Prevent duplicate reviews where appropriate.
+- Display average ratings and review counts.
+- Allow Admin moderation.
+- Prevent fake reviews from unauthorized users.
+
+==================================================
+PART 21 — DATABASE ARCHITECTURE
+==================================================
+
+If starting from scratch, use Supabase PostgreSQL.
+
+First inspect and reuse existing schema if the project already has a database.
+
+Required logical entities:
+
+- profiles
+- community_members
+- user_presence
+- call_sessions
+- matching_sessions
+- matching_attempts
+- user_blocks
+- user_reports
+- membership_plans
+- user_subscriptions
+- mentor_applications
+- mentor_profiles
+- courses
+- course_sections
+- course_lessons
+- course_enrollments
+- live_classes
+- class_enrollments
+- class_attendance
+- payments
+- mentor_earnings
+- mentor_payouts
+- notifications
+- reviews
+- learning_progress
+- quizzes
+- quiz_attempts
+- assignments
+
+These are logical entities. Adapt them to existing database structures and avoid unnecessary duplication.
+
+### Database Requirements
+
+- Primary keys.
+- Foreign keys.
+- Unique constraints.
+- Appropriate indexes.
+- Created/updated timestamps.
+- Atomic matching.
+- Atomic seat allocation.
+- Secure payment processing.
+- Enrollment validation.
+- Ownership checks.
+- Role-based authorization.
+- Row Level Security.
+
+If using Supabase:
+
+- Create SQL migration files.
+- Enable RLS.
+- Write policies for every sensitive table.
+- Use secure RPC functions or Edge Functions for privileged operations.
+- Restrict private Realtime channels.
+- Never expose the service-role key in frontend code.
+
+==================================================
+PART 22 — WEBRTC, STUN AND TURN
+==================================================
+
+Implement real WebRTC audio/video communication.
+
+Use:
+
+- RTCPeerConnection.
+- getUserMedia.
+- SDP offer/answer.
+- ICE candidates.
+- Supabase Realtime private signaling.
+
+Support configurable STUN/TURN servers.
+
+Requirements:
+
+- Handle connection failures.
+- Handle ICE state changes.
+- Clean up peer connections.
+- Stop media tracks.
+- Remove event listeners.
+- Prevent duplicate signaling subscriptions.
+- Support reconnection.
+
+Do not expose permanent TURN credentials in frontend environment variables.
+
+Use provider-supported temporary credentials or generate short-lived TURN credentials through a secure backend.
+
+If TURN credentials are missing, support STUN-based testing and document the remaining setup.
+
+Do not claim reliable production connectivity without testing TURN across different networks.
+
+==================================================
+PART 23 — SECURITY, PRIVACY AND COMMUNITY SAFETY
+==================================================
+
+Implement:
+
+- Approved, age-appropriate community.
+- Account verification.
+- Secure authentication.
+- Private signaling channels.
+- Block/report.
+- Mentor approval.
+- Class admission verification.
+- Payment verification.
+- Rate limiting.
+- Spam protection.
+- Admin moderation.
+- Privacy controls.
+- User suspension.
+- Secure data access.
+- No recording by default.
+
+Provide appropriate safeguarding for younger users.
+
+Mentor/student interactions must follow appropriate age and safety policies, including supervision where required.
+
+Do not enable unrestricted anonymous public video chat.
+
+==================================================
+PART 24 — UI/UX DESIGN
+==================================================
+
+Create a premium, modern, mobile-first English learning platform.
+
+Design principles:
+
+- Clean layout.
+- Professional typography.
+- Consistent colors.
+- Modern cards.
+- Responsive navigation.
+- Clear action buttons.
+- Accessible forms.
+- Good mobile experience.
+- Loading skeletons.
+- Empty states.
+- Error states.
+- Confirmation dialogs.
+- Toast notifications.
+
+Avoid clutter.
+
+Use consistent reusable components.
+
+### Required Public Pages
+
+- Landing Page.
+- About.
+- Pricing.
+- Mentor Directory.
+- Mentor Profile.
+- Course Marketplace.
+- Class Marketplace.
+- Login.
+- Registration.
+- Forgot Password.
+
+### Member Pages
+
+- Dashboard.
+- Practice.
+- Speaking Room.
+- Learn.
+- Courses.
+- Course Details.
+- My Courses.
+- Live Classes.
+- Class Details.
+- My Classes.
+- Subscription.
+- Payment History.
+- Profile.
+- Notifications.
+- Settings.
+
+### Mentor Pages
+
+- Mentor Application.
+- Mentor Dashboard.
+- Mentor Profile Management.
+- Create Class.
+- Manage Classes.
+- Create Course.
+- Manage Courses.
+- Student Management.
+- Attendance.
+- Earnings.
+- Payout Requests.
+
+### Admin Pages
+
+- Admin Dashboard.
+- Member Management.
+- Mentor Management.
+- Mentor Approval.
+- Membership Plans.
+- Subscription Management.
+- Course Management.
+- Class Management.
+- Enrollment Management.
+- Payment Management.
+- Commission Management.
+- Earnings.
+- Payout Management.
+- Reports.
+- Settings.
+
+==================================================
+PART 25 — TESTING AND QUALITY ASSURANCE
+==================================================
+
+Test the complete application.
+
+### Authentication
+
+- Registration.
+- Login.
+- Logout.
+- Email verification.
+- Password reset.
+- Protected routes.
+
+### Practice
+
+- Automatic matching.
+- Incoming request.
+- Accept/reject.
+- Skip.
+- Next Partner.
+- Call cleanup.
+- Audio/video.
+- Reconnection.
+- Offline/busy handling.
+- Subscription limits.
+
+### Subscription
+
+- Free membership.
+- Premium membership.
+- Upgrade.
+- Expiry.
+- Renewal.
+- Practice limit enforcement.
+
+### Mentor
+
+- Application.
+- Approval.
+- Rejection.
+- Profile.
+- Class creation.
+- Course creation.
+
+### Free Classes
+
+- Registration.
+- Capacity.
+- Attendance.
+- Access validation.
+
+### Paid Classes
+
+- Payment verification.
+- Enrollment.
+- Duplicate transaction protection.
+- Capacity protection.
+- Class access.
+
+### Courses
+
+- Free enrollment.
+- Paid enrollment.
+- Lesson access.
+- Progress tracking.
+
+### Earnings
+
+- Commission calculation.
+- Mentor ledger.
+- Payout request.
+- Admin approval.
+
+### Security
+
+- RLS.
+- API authorization.
+- Role permissions.
+- Payment verification.
+- Privacy.
+- Concurrent requests.
+
+Fix discovered errors before reporting completion.
+
+==================================================
+PART 26 — DEVELOPMENT EXECUTION RULES
+==================================================
+
+Follow these rules strictly:
+
+1. Inspect the existing project first.
+2. Preserve all existing working code.
+3. Do not create a separate replacement application.
+4. Build missing features.
+5. Reuse existing components and services.
+6. Do not duplicate database structures.
+7. Do not delete existing user data.
+8. Do not reset the database.
+9. Do not use mock data as final functionality.
+10. Do not create fake payment success.
+11. Do not expose secret API keys.
+12. Do not expose permanent TURN credentials.
+13. Do not bypass RLS.
+14. Keep the project in JavaScript if JavaScript is already used.
+15. Make all visible buttons functional.
+16. Implement real backend validation.
+17. Add database migrations.
+18. Test existing functionality after every major integration.
+19. Fix build errors.
+20. Do not claim external services are connected unless actually configured and tested.
+
+If an external API credential is missing:
+
+- Build the integration.
+- Create configuration documentation.
+- Explain where credentials are required.
+- Keep the integration safely disabled until configured.
+- Continue implementing other features.
+
+Do not stop at a plan or explanation. Actually implement the application.
+
+==================================================
+PART 27 — FINAL DELIVERY AND REPORT
+==================================================
+
+After implementation, provide:
+
+1. Existing project analysis.
+2. Features preserved.
+3. Features newly implemented.
+4. Updated project structure.
+5. Database migrations.
+6. API endpoints.
+7. Security and RLS summary.
+8. Required environment variables.
+9. Supabase setup instructions.
+10. STUN/TURN setup instructions.
+11. Payment gateway setup instructions.
+12. Vercel deployment instructions.
+13. Testing results.
+14. Known limitations.
+15. Remaining manual configuration.
+
+Clearly distinguish:
+
+- Implemented and tested.
+- Implemented but awaiting credentials.
+- Not implemented.
+
+Do not claim deployment, payment integration, or real-world call functionality is complete without actual verification.
+
+==================================================
+FINAL PRODUCT REQUIREMENT
+==================================================
+
+Build SpeakMate as one complete English Learning Platform with three integrated systems.
+
+PRACTICE:
+Members automatically connect with eligible available partners, practice English through real audio/video conversations, skip partners, and connect to another available member.
+
+LEARN:
+Students discover mentors, browse free and paid courses, register for free classes, purchase paid class admissions, attend live classes, access learning materials, and track progress.
+
+EARN:
+Approved mentors create free and paid classes, publish courses, teach students, manage admissions, and earn from paid enrollments under configurable platform commission rules.
+
+BUSINESS MODEL:
+Free Membership + Premium Subscription + Free Mentor Classes + Paid Mentor Classes + Free Courses + Paid Courses + Mentor Earnings + Platform Commission.
+
+MOST IMPORTANT:
+
+Integrate everything with the existing project if code already exists.
+
+Preserve existing working code and data.
+
+If the project is partially developed, complete the missing functionality.
+
+If the project is empty, build the complete application from scratch.
+
+The final output must be a unified, secure, responsive, fully functional SpeakMate application — not just a UI design, mockup, or development plan.
